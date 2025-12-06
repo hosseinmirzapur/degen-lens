@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Token Highlighter",
+  "version": "1.0.0",
+  "description": "Highlights risky and pumpable tokens on trading terminals.",
+  "permissions": ["storage", "scripting"],
+  "host_permissions": [
+    "*://*.gmgn.ai/*",
+    "*://*.axiom.trade/*",
+    "*://*.dexscreener.com/*"
+  ],
+  "action": {
+    "default_popup": "src/options/index.html"
+  },
+  "options_ui": {
+    "page": "src/options/index.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.gmgn.ai/*",
+        "*://*.axiom.trade/*",
+        "*://*.dexscreener.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "48": "icon.png"
+  }
+}

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memecoin Highlighter Settings</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Memecoin Highlighter Settings</h1>
+        <p>
+          Configure thresholds for highlighting pumpable, risky, and stable
+          tokens on supported platforms.
+        </p>
+      </header>
+
+      <form id="settingsForm">
+        <div class="setting-group">
+          <h3>General</h3>
+          <label class="checkbox-label">
+            <input type="checkbox" id="enabled" />
+            <span>Enable Extension</span>
+          </label>
+        </div>
+
+        <div class="setting-group">
+          <h3>Pumpable Tokens</h3>
+          <p class="description">
+            Highlight tokens with potential for quick gains.
+          </p>
+          <div class="input-grid">
+            <label
+              >Min Market Cap ($): <input type="number" id="pumpMinMc" min="0"
+            /></label>
+            <label
+              >Max Market Cap ($): <input type="number" id="pumpMaxMc" min="0"
+            /></label>
+            <label
+              >Min Liquidity ($): <input type="number" id="pumpMinLiq" min="0"
+            /></label>
+            <label
+              >Buy/Sell Ratio Threshold:
+              <input type="number" id="pumpBuySellRatio" min="0" step="0.1"
+            /></label>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3>Risky Tokens</h3>
+          <p class="description">Highlight tokens with high risk indicators.</p>
+          <div class="input-grid">
+            <label
+              >Max Liquidity ($): <input type="number" id="riskMaxLiq" min="0"
+            /></label>
+            <label
+              >Sell/Buy Ratio Threshold:
+              <input type="number" id="riskSellBuyRatio" min="0" step="0.1"
+            /></label>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3>Stable Tokens</h3>
+          <p class="description">
+            Highlight established tokens with deep liquidity.
+          </p>
+          <div class="input-grid">
+            <label
+              >Min Market Cap ($):
+              <input type="number" id="stableMinMc" min="0"
+            /></label>
+            <label
+              >Min Liquidity ($):
+              <input type="number" id="stableMinLiq" min="0"
+            /></label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" id="save">Save Settings</button>
+          <button type="button" id="reset">Reset to Defaults</button>
+          <span id="status"></span>
+        </div>
+      </form>
+    </div>
+    <script type="module" src="index.ts"></script>
+  </body>
+</html>
