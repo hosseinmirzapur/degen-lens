@@ -15,7 +15,7 @@ export const injectStyles = () => {
       transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
       position: relative !important;
       z-index: 10 !important;
-      border-radius: 12px !important;
+      border-radius: 0 !important;
       overflow: hidden !important;
     }
 

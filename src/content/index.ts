@@ -2,18 +2,27 @@
 
 import { injectStyles } from "./highlighter";
 import { parseAxiom } from "./axiom";
+import { parseGMGN } from "./gmgn";
 
 const init = async () => {
   injectStyles();
 
-  if (!window.location.hostname.includes("axiom")) return;
-
   const settings = await chrome.storage.sync.get(["enabled"]);
   if (!settings.enabled) return;
 
+  let parser: () => Promise<void>;
+
+  if (window.location.hostname.includes("axiom")) {
+    parser = parseAxiom;
+  } else if (window.location.hostname.includes("gmgn")) {
+    parser = parseGMGN;
+  } else {
+    return; // No supported site
+  }
+
   const runParsers = async () => {
     try {
-      await parseAxiom();
+      await parser();
     } catch (e) {
       console.error("[Degen-Lens] Parse Error:", e);
     }
