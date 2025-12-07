@@ -6,14 +6,27 @@ export interface TokenMetrics {
   buys?: number;
   sells?: number;
   holderCount?: number;
+  age?: number; // in minutes
+  devHolding?: number; // percentage
+  proTraders?: number;
+  snipers?: number; // percentage
+  insiders?: number; // percentage
 }
 
 export const parseKMB = (str: string): number => {
   if (!str) return 0;
-  const s = str.toUpperCase().replace(/[^0-9.KMB]/g, "");
+  let cleaned = str.toUpperCase().replace(/[^0-9.KMB]/g, "");
   let multiplier = 1;
-  if (s.includes("K")) multiplier = 1000;
-  if (s.includes("M")) multiplier = 1000000;
-  if (s.includes("B")) multiplier = 1000000000;
-  return parseFloat(s) * multiplier;
+  if (cleaned.endsWith("B")) {
+    multiplier = 1000000000;
+    cleaned = cleaned.slice(0, -1);
+  } else if (cleaned.endsWith("M")) {
+    multiplier = 1000000;
+    cleaned = cleaned.slice(0, -1);
+  } else if (cleaned.endsWith("K")) {
+    multiplier = 1000;
+    cleaned = cleaned.slice(0, -1);
+  }
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? 0 : num * multiplier;
 };

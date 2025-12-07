@@ -5,43 +5,97 @@ export type Classification = "risky" | "pumpable" | "stable" | "neutral";
 export interface Thresholds {
   pumpMinMc: number;
   pumpMaxMc: number;
-  pumpMinLiq: number;
+  pumpMinVol: number;
   pumpBuySellRatio: number;
-  riskMaxLiq: number;
+  riskMaxVol: number;
   riskSellBuyRatio: number;
   stableMinMc: number;
-  stableMinLiq: number;
+  stableMinVol: number;
+  maxAge?: number; // in minutes
+  maxDevHolding?: number; // percentage
+  minHolders?: number;
+  minProTraders?: number;
+  maxSnipers?: number; // percentage
+  maxInsiders?: number; // percentage
 }
 
 export const classifyToken = (
   metrics: TokenMetrics,
   thresholds: Thresholds
 ): Classification => {
-  const { mc = 0, liquidity = 0, buys = 0, sells = 0 } = metrics;
+  const {
+    mc = 0,
+    volume5m = 0,
+    buys = 0,
+    sells = 0,
+    age,
+    devHolding,
+    holderCount,
+    proTraders,
+    snipers,
+    insiders,
+  } = metrics;
+
+  if (
+    thresholds.maxAge !== undefined &&
+    age !== undefined &&
+    age > thresholds.maxAge
+  )
+    return "neutral";
+  if (
+    thresholds.maxDevHolding !== undefined &&
+    devHolding !== undefined &&
+    devHolding > thresholds.maxDevHolding
+  )
+    return "neutral";
+  if (
+    thresholds.minHolders !== undefined &&
+    holderCount !== undefined &&
+    holderCount < thresholds.minHolders
+  )
+    return "neutral";
+  if (
+    thresholds.minProTraders !== undefined &&
+    proTraders !== undefined &&
+    proTraders < thresholds.minProTraders
+  )
+    return "neutral";
+  if (
+    thresholds.maxSnipers !== undefined &&
+    snipers !== undefined &&
+    snipers > thresholds.maxSnipers
+  )
+    return "neutral";
+  if (
+    thresholds.maxInsiders !== undefined &&
+    insiders !== undefined &&
+    insiders > thresholds.maxInsiders
+  )
+    return "neutral";
 
   // RULE SET 1: PUMPABLE
-  // Low MC, decent liq, buy pressure
+  // Low MC, decent volume, buy pressure
   if (
     mc > thresholds.pumpMinMc &&
     mc < thresholds.pumpMaxMc &&
-    liquidity > thresholds.pumpMinLiq &&
+    volume5m > thresholds.pumpMinVol &&
     buys > sells * thresholds.pumpBuySellRatio
   ) {
     return "pumpable";
   }
 
   // RULE SET 2: RISKY
-  // Tiny liquidity or massive sell pressure
+  // Tiny volume or massive sell pressure
   if (
-    liquidity < thresholds.riskMaxLiq ||
+    volume5m < thresholds.riskMaxVol ||
     sells > buys * thresholds.riskSellBuyRatio
   ) {
     return "risky";
   }
 
   // RULE SET 3: STABLE
-  // High MC, deep liquidity
-  if (mc > thresholds.stableMinMc && liquidity > thresholds.stableMinLiq) {
+  // High MC, deep volume
+  if (mc > thresholds.stableMinMc && volume5m > thresholds.stableMinVol) {
     return "stable";
   }
 
